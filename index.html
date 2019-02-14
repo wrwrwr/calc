@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Calc</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script src="./colors.js"></script>
+        <script src="./grammar.js"></script>
+    </head>
+    <body>
+        <div id="root" :style="style">
+            <input v-model="input" placeholder="Enter an expression...">
+            <p>{{result}}</p>
+        </div>
+
+        <script>
+            new Vue({
+                el: '#root',
+                data: {
+                    input: '',
+                    result: '',
+                    style: {
+                        color: 'black'
+                    }
+                },
+                watch: {
+                    input() {
+                        for (let [color, [h, s, l]] of COLORS) {
+                            if (this.input.includes(color)) {
+                                this.input = this.input.replace(color, '')
+                                this.style.color = `hsl(${h}, ${s}%, ${l}%)`
+                            }
+                        }
+                        try {
+                            this.result = calc.parse(this.input)
+                        } catch (peg$SyntaxError) {}
+                    }
+                }
+            })
+        </script>
+
+        <style>
+            #root {
+                display: grid;
+            }
+
+            input {
+                font-size: 150%;
+            }
+        </style>
+    </body>
+</html>
